@@ -6,24 +6,24 @@ import {icon} from '@fortawesome/fontawesome-svg-core/import.macro'
 import CameraView from "./view/camera";
 import ScreenView from "./view/screen";
 
-export enum MainContentType {
-    CAMERA,
-    SCREEN
+export const MainContentType = {
+    CAMERA: 0,
+    SCREEN: 1
 }
 
 export interface IMainProps {
     title: string,
-    type?: MainContentType
+    type?: number
 }
 
 const MainView = (props: IMainProps) => {
-    const [type, setType] = useState<MainContentType>(props.type ? props.type : MainContentType.CAMERA)
+    const [type, setType] = useState<number>(props.type ? props.type : 0)
 
     const clickSidebar = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
         const button: HTMLButtonElement = event.currentTarget;
-        const type = button.dataset.type as unknown as MainContentType;
+        const type = Number(button.dataset.type);
         setType(type);
     };
 
