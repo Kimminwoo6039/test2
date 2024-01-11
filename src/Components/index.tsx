@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
+import {icon} from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import CameraView from "./view/camera";
 import ScreenView from "./view/screen";
@@ -41,13 +41,13 @@ const MainView = (props: IMainProps) => {
                         메뉴 목록
                     </li>
                     <li>
-                        <button type="button" className={type == MainContentType.CAMERA ? 'active' : ''}
+                        <button type="button" className={type === MainContentType.CAMERA ? 'active' : ''}
                                 onClick={clickSidebar} data-type={MainContentType.CAMERA}>
                             <FontAwesomeIcon icon={icon({name: 'camera'})}/> 카메라
                         </button>
                     </li>
                     <li>
-                        <button type="button" className={type == MainContentType.SCREEN ? 'active' : ''}
+                        <button type="button" className={type === MainContentType.SCREEN ? 'active' : ''}
                                 onClick={clickSidebar} data-type={MainContentType.SCREEN}>
                             <FontAwesomeIcon icon={icon({name: 'desktop'})}/> 스크린
                         </button>
@@ -58,8 +58,8 @@ const MainView = (props: IMainProps) => {
                 <header className="header">
                 </header>
                 <section className="section">
-                    {type == MainContentType.CAMERA ? <CameraView /> : null}
-                    {type == MainContentType.SCREEN ? <ScreenView /> : null}
+                    {type === MainContentType.CAMERA ? <CameraView /> : null}
+                    {type === MainContentType.SCREEN ? <ScreenView /> : null}
                 </section>
             </div>
         </>

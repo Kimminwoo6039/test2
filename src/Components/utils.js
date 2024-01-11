@@ -132,17 +132,17 @@ const Alert = {
             html: text + timeContext,
             timer: time * 1000,
             willOpen: () => {
-                if (params.time != undefined) {
+                if (params.time !== undefined) {
                     timerInterval = setInterval(() => {
                         const section = Swal.getContent().querySelector('strong');
-                        if (section != null) {
+                        if (section !== null) {
                             section.textContent = Math.ceil(Swal.getTimerLeft() / 1000);
                         }
                     }, 1000);
                 }
             },
             willClose: () => {
-                if (params.time != undefined) {
+                if (params.time !== undefined) {
                     clearInterval(timerInterval);
                 }
             },
