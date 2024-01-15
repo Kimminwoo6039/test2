@@ -5,7 +5,7 @@
 @media(max-width: 768px){
     body {
         --header-size: 60px;
-        --sidebar-size: 75px;
+        --sidebar-size: 80px;
     }
     #root {
         flex-direction: column;
