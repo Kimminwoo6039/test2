@@ -35,4 +35,11 @@
     .content {
         width: 100%;
     }
+    .container .desc-section, .container .view-section {
+        width: 100%;
+        padding: 0;
+    }
+    .card-body {
+        padding: 0.8rem 1rem;
+    }
 }

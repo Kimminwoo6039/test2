@@ -28,6 +28,7 @@
     transform: translateX(-50%);
     padding: 3px;
     background: linear-gradient(120deg, #4533ff, #ff3a9d);
+    transition: background 1s;
 }
 .profile-container .logo-wrapper .logo-avatar {
     width: 100%;

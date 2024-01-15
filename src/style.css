@@ -172,6 +172,15 @@ button {
   height: 100%;
   overflow: auto;
 }
+.d-flex {
+  display: flex;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-column {
+  flex-direction: column;
+}
 .container .desc-section {
   width: 400px;
   padding-right: 1rem;
@@ -211,4 +220,56 @@ button {
 /* SweetAlert */
 body.swal2-shown.swal2-height-auto {
   height: 100% !important;
+}
+.device-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.device-list .device-item {
+  width: 12rem;
+  height: 6rem;
+  word-break: break-word;
+  text-align: center;
+  border: solid 2px #ddd;
+  background: #fcfcfc;
+  color: #777;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.device-list .device-item:hover {
+  cursor: pointer;
+  color: hotpink;
+  border-color: hotpink;
+  background: #ffebf5;
+}
+.device-list .device-item.active {
+  color: #5582ff;
+  border-color: #5582ff;
+  background: #eaf0ff;
+  font-weight: 600;
+}
+.device-list .device-item .icon {
+  font-size: 1.5rem;
+}
+.device-list .device-item .name {
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+video#camera {
+  width: 500px;
+  height: 600px;
+}
+video.reverse {
+  -moz-transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  -o-transform: scale(-1, 1);
+  transform: scale(-1, 1);
 }

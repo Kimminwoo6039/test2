@@ -95,11 +95,7 @@ const ScreenView = () => {
             }
             // 화면 재생
             else if (type === 'play') {
-                if(tab !== 0){
-                    setTab(0);
-                } else {
-                    videoObj.current.play();
-                }
+                await videoObj.current.play();
                 setIsPlayed(true);
             }
             // 화면 캡처
@@ -149,11 +145,9 @@ const ScreenView = () => {
             videoObj.current.srcObject = stream;
             if(isPlayed){
                 videoObj.current.play();
-            } else {
-                videoObj.current.pause();
             }
         }
-    }, [stream, tab, isPlayed])
+    }, [stream, tab])
 
     return (
         <div className="container card">
