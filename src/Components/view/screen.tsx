@@ -3,18 +3,7 @@ import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import Alert from "../utils";
-import {
-    Box,
-    Button,
-    ButtonGroup,
-    FormControlLabel,
-    IconButton,
-    Switch,
-    Tab,
-    Tabs,
-    Tooltip,
-    Typography
-} from "@mui/material";
+import {Box, Button, ButtonGroup, FormControlLabel, IconButton, Switch, Tab, Tabs, Tooltip} from "@mui/material";
 import {
     faArrowPointer,
     faCamera,
@@ -29,39 +18,7 @@ import {
     faVolumeHigh,
     faVolumeXmark
 } from "@fortawesome/free-solid-svg-icons";
-
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-}
-
-function CustomTabPanel(props: TabPanelProps) {
-    const {children, value, index, ...other} = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{p: 3}}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-
-function tabProps(index: number) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
+import {CustomTabPanel, tabProps} from "../element/tab";
 
 const ScreenView = () => {
     const [tab, setTab] = useState(0);
@@ -87,8 +44,8 @@ const ScreenView = () => {
         });
     }
 
-    const controlVideo = function(type: string) {
-        return async function(event: React.MouseEvent<HTMLButtonElement>){
+    const controlVideo = function (type: string) {
+        return async function (event: React.MouseEvent<HTMLButtonElement>) {
             // 화면 선택
             if (type === 'select') {
                 await getDisplayMedia();
@@ -109,12 +66,12 @@ const ScreenView = () => {
                 videoObj.current.srcObject = null;
             }
             // 화면 다운로드
-            else if(type === 'download'){
+            else if (type === 'download') {
                 canvasObj.current.width = videoObj.current.width;
                 canvasObj.current.height = videoObj.current.height;
 
                 const ctx = canvasObj.current.getContext('2d');
-                if(ctx != null){
+                if (ctx != null) {
                     ctx.drawImage(videoObj.current, 0, 0, videoObj.current.width, videoObj.current.height);
                 }
 
@@ -130,8 +87,8 @@ const ScreenView = () => {
         }
     };
 
-    const recordVideo = function(type: string) {
-        return async function(event: React.MouseEvent<HTMLButtonElement>){
+    const recordVideo = function (type: string) {
+        return async function (event: React.MouseEvent<HTMLButtonElement>) {
 
         }
     };
@@ -143,9 +100,6 @@ const ScreenView = () => {
     useEffect(function () {
         if (stream !== undefined) {
             videoObj.current.srcObject = stream;
-            if(isPlayed){
-                videoObj.current.play();
-            }
         }
     }, [stream, tab])
 
@@ -196,13 +150,15 @@ const ScreenView = () => {
                         </ButtonGroup>
                         <ButtonGroup>
                             <Button variant="outlined" color="info" onClick={controlVideo('play')}
-                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faPlay}/>}> 화면 재생
+                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faPlay}/>}> 재생
                             </Button>
                             <Button variant="outlined" color="warning" onClick={controlVideo('capture')}
-                                    disabled={stream == null || !isPlayed} startIcon={<FontAwesomeIcon icon={faCamera}/>}> 화면 캡처
+                                    disabled={stream == null || !isPlayed}
+                                    startIcon={<FontAwesomeIcon icon={faCamera}/>}> 캡처
                             </Button>
                             <Button variant="outlined" color="secondary" onClick={controlVideo('download')}
-                                    disabled={stream == null || isPlayed} startIcon={<FontAwesomeIcon icon={faDownload}/>}> 다운로드
+                                    disabled={stream == null || isPlayed}
+                                    startIcon={<FontAwesomeIcon icon={faDownload}/>}> 다운로드
                             </Button>
                         </ButtonGroup>
                     </div>
@@ -212,18 +168,18 @@ const ScreenView = () => {
                         <div className="title">녹화</div>
                         <ButtonGroup variant="outlined" color="inherit">
                             <Button onClick={recordVideo('play')}
-                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faPlay}/>}> 녹화 시작
+                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faPlay}/>}> 시작
                             </Button>
                             <Button onClick={recordVideo('pause')}
-                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faPause}/>}> 녹화 임시 중지
+                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faPause}/>}> 임시 중지
                             </Button>
                             <Button onClick={recordVideo('stop')}
-                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faStop}/>}> 녹화 중단
+                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faStop}/>}> 중단
                             </Button>
                         </ButtonGroup>
                         <ButtonGroup>
                             <Button variant="outlined" onClick={recordVideo('download')} data-type="download"
-                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faDownload}/>}> Download
+                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faDownload}/>}> 다운로드
                             </Button>
                         </ButtonGroup>
                     </div>
@@ -232,8 +188,8 @@ const ScreenView = () => {
                     <Box sx={{width: '100%'}}>
                         <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                             <Tabs value={tab} onChange={handleTabs} aria-label="basic tabs example">
-                                <Tab label={<div><FontAwesomeIcon icon={faCircleDot} /> Live</div>} {...tabProps(0)} />
-                                <Tab label={<div><FontAwesomeIcon icon={faVideo} /> Save</div>} {...tabProps(1)} />
+                                <Tab label={<div><FontAwesomeIcon icon={faCircleDot}/> Live</div>} {...tabProps(0)} />
+                                <Tab label={<div><FontAwesomeIcon icon={faVideo}/> Save</div>} {...tabProps(1)} />
                             </Tabs>
                         </Box>
                         <CustomTabPanel value={tab} index={0}>

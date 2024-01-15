@@ -145,9 +145,16 @@ button {
 .container, video {
   width: 100%;
 }
+section {
+  width: 100%;
+}
 .section {
   width: 100%;
 }
+.section:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
 .card {
   background-color: rgb(255, 255, 255);
   color: rgb(33, 43, 54);
@@ -223,13 +230,13 @@ body.swal2-shown.swal2-height-auto {
 }
 .device-list {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  overflow-x: auto;
 }
 
 .device-list .device-item {
   width: 12rem;
+  max-width: calc(50% - 0.5rem / 2);
   height: 6rem;
   word-break: break-word;
   text-align: center;
@@ -265,7 +272,10 @@ body.swal2-shown.swal2-height-auto {
 }
 video#camera {
   width: 500px;
-  height: 600px;
+  max-width: 100%;
+}
+canvas#canvas {
+  display: none;
 }
 video.reverse {
   -moz-transform: scale(-1, 1);

@@ -41,5 +41,6 @@
     }
     .card-body {
         padding: 0.8rem 1rem;
+        flex-direction: column;
     }
 }

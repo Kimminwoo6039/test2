@@ -1,7 +1,7 @@
 import React, {MouseEventHandler, MutableRefObject, useEffect, useRef, useState} from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCamera} from "@fortawesome/free-solid-svg-icons";
-import {Button, ButtonGroup} from "@mui/material";
+import {Button, ButtonGroup, FormControlLabel, Switch} from "@mui/material";
 
 interface IDeviceProps {
     info: MediaDeviceInfo;
@@ -18,16 +18,18 @@ const Camera = (props: IDeviceProps) => {
     );
 }
 const CameraView = () => {
+    const [isCaptured, setIsCaptured] = useState(false);
+    const [isReversed, setIsReversed] = useState(true);
+
     const videoRef = useRef<HTMLVideoElement>() as MutableRefObject<HTMLVideoElement>;
     const canvasRef = useRef<HTMLCanvasElement>() as MutableRefObject<HTMLCanvasElement>;
-    const [stream, setStream] = useState<MediaStream>();
+
     const [cameraId, setCameraId] = useState<string>()
     const [cameras, setCameras] = useState<MediaDeviceInfo[]>()
 
     const getUserMedia = function(constraints?: MediaStreamConstraints){
         return new Promise(function(resolve, reject) {
             navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-                setStream(stream);
                 videoRef.current.srcObject = stream;
                 resolve(stream);
             }).catch(error => {
@@ -56,8 +58,15 @@ const CameraView = () => {
     
     // 카메라 ID 변경 시 변경된 Video 저장
     useEffect(function(){
-        getUserMedia({video: {deviceId: cameraId, facingMode: 'user', width: 400, height: 600}})
+        getUserMedia({video: {deviceId: cameraId, facingMode: 'user', width: 400, height: 600}});
+
+        console.log(isCaptured)
     }, [cameraId]);
+
+    function playVideo(){
+        setIsCaptured(false);
+        videoRef.current.play();
+    }
 
     function savePicture(){
         const video = videoRef.current;
@@ -71,13 +80,26 @@ const CameraView = () => {
 
         if(context != null){
             // canvas 좌우반전
-            context.scale(-1, 1);
-            context.translate(-canvas.width, 0);
+            if(isReversed){
+                context.scale(-1, 1);
+                context.translate(-canvas.width, 0);
+            }
             context.drawImage(video, 0, 0);
         }
 
+        setIsCaptured(true);
         return canvas.toDataURL('image/png');
     }
+
+    function downloadPicture(){
+        const a = document.createElement('a');
+
+        a.href = savePicture();
+        a.download = Date.now() + '.png';
+        document.body.appendChild(a);
+        a.click();
+    }
+
     return (
         <div className="container card">
             <div className="card-body flex-column">
@@ -92,19 +114,28 @@ const CameraView = () => {
                         })}
                     </div>
                 </div>
-                <div className="d-flex section">
-                    <div className="section desc-section">
-                        <ButtonGroup>
-                            <Button onClick={e => {
-                                videoRef.current.classList.toggle('reverse');
-                            }}>좌우 반전</Button>
-                            <Button onClick={savePicture}>사진 촬영</Button>
-                        </ButtonGroup>
+                <div className="section">
+                    <div className="section-btn-group">
+                        <div className="title">카메라 옵션</div>
+                        <div>
+                            <FormControlLabel labelPlacement="end"
+                                              control={<Switch onChange={event => {
+                                                  setIsReversed(event.target.checked);
+                                              }}
+                                                               defaultChecked={true}/>}
+                                              label="좌우 반전"/>
+                            <ButtonGroup>
+                                <Button hidden={isCaptured} onClick={savePicture}>촬영</Button>
+                                <Button hidden={!isCaptured} onClick={playVideo}>재촬영</Button>
+                                <Button onClick={downloadPicture}>사진 다운로드</Button>
+                            </ButtonGroup>
+                        </div>
                     </div>
-                    <div className="view-section">
-                        <video id="camera" autoPlay={true} ref={videoRef}></video>
-                        <canvas id="canvas" ref={canvasRef}></canvas>
-                    </div>
+
+                </div>
+                <div className="section">
+                    <video id="camera" autoPlay={true} ref={videoRef} className={isReversed ? 'reverse' : ''}></video>
+                    <canvas id="canvas" ref={canvasRef}></canvas>
                 </div>
 
             </div>

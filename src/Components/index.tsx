@@ -139,9 +139,9 @@ const MainView = (props: IMainProps) => {
             </nav>
             <div className="content">
                 <header className="header">
-                    {menuInfo.name}
+                    {menuInfo.name} 메뉴
                 </header>
-                <section className="section">
+                <section>
                     {menuInfo.view}
                 </section>
             </div>
