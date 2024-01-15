@@ -1,0 +1,63 @@
+.profile-container {
+    position: relative;
+    background: white;
+    border-radius: 1rem;
+    margin: 1rem 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    box-shadow: rgba(145, 158, 171, 0.08) 0px 0px 2px 0px, rgba(145, 158, 171, 0.08) 0px 12px 24px -4px;
+    --logo-size: 120px;
+    --avatar-size: 120px;
+}
+.profile-container .logo-area {
+    width: 100%;
+    height: var(--logo-size);
+    background: linear-gradient(120deg, #cddeff, #ffcdf4);
+    margin-bottom: calc(var(--avatar-size) / 4 + 1rem);
+}
+.profile-container .logo-wrapper {
+    position: absolute;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    top: calc(var(--logo-size) - var(--avatar-size) / 4 * 3);
+    left: 50%;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    padding: 3px;
+    background: linear-gradient(120deg, #4533ff, #ff3a9d);
+}
+.profile-container .logo-wrapper .logo-avatar {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border: solid 3px white;
+}
+.profile-container .info-area {
+    margin-bottom: 1rem;
+}
+.profile-container .info-area .name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.profile-container .link-area {
+    height: 30px;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+.profile-container .link-area img {
+    height: 100%;
+}
+
+.drawer .profile-container {
+    border-bottom: dashed 2px rgba(0,0,0,0.1);
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
+}

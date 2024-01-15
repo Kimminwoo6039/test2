@@ -2,15 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './Fonts/NotoSans.css'
 import './style.css';
+import './responsive.css';
 import reportWebVitals from './reportWebVitals';
 import MainView from "./Components";
+import {DevSupport} from "@react-buddy/ide-toolbox";
+import {ComponentPreviews, useInitial} from "./dev";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <React.StrictMode>
-        <MainView title={"Media Application"}/>
+        <DevSupport ComponentPreviews={ComponentPreviews}
+                    useInitialHook={useInitial}
+        >
+            <MainView title={"Media App"}/>
+        </DevSupport>
     </React.StrictMode>
 );
 
