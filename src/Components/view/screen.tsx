@@ -19,18 +19,33 @@ import {
     faVolumeXmark
 } from "@fortawesome/free-solid-svg-icons";
 import {CustomTabPanel, tabProps} from "../element/tab";
+import {VideoUtil} from "../element/video";
 
 const ScreenView = () => {
     const [tab, setTab] = useState(0);
-    const [isPlayed, setIsPlayed] = useState(false);
     const [stream, setStream] = useState<MediaStream>();
 
     const [videoOptions, setVideoOptions] = useState<boolean>(true);
     const [audioOptions, setAudioOptions] = useState<boolean>(true);
 
+    const [videoUtil, setVideoUtil] = useState<VideoUtil>()
+
+    const [isCaptured, setIsCaptured] = useState(false);
     const videoObj = useRef<HTMLVideoElement>(null) as MutableRefObject<HTMLVideoElement>;
+
     const recordObj = useRef<HTMLVideoElement>(null) as MutableRefObject<HTMLVideoElement>;
-    const canvasObj = useRef<HTMLCanvasElement>(null) as MutableRefObject<HTMLCanvasElement>;
+
+    useEffect(() => {
+        setVideoUtil(new VideoUtil(videoObj.current, {
+            mirror: false
+        }));
+    }, []);
+
+    useEffect(function () {
+        if (stream !== undefined) {
+            videoObj.current.srcObject = stream;
+        }
+    }, [stream, tab]);
 
     async function getDisplayMedia() {
         const constraints = {video: videoOptions, audio: audioOptions};
@@ -38,7 +53,7 @@ const ScreenView = () => {
         return await navigator.mediaDevices.getDisplayMedia(constraints).then(stream => {
             videoObj.current.srcObject = stream;
             setStream(stream);
-            setIsPlayed(true);
+            setIsCaptured(false);
         }).catch(text => {
             Alert.error({title: "Can't capture screen", text: text});
         });
@@ -52,37 +67,24 @@ const ScreenView = () => {
             }
             // 화면 재생
             else if (type === 'play') {
-                await videoObj.current.play();
-                setIsPlayed(true);
+                setIsCaptured(false);
+                videoUtil && videoUtil.play();
             }
             // 화면 캡처
             else if (type === 'capture') {
-                videoObj.current.pause();
-                setIsPlayed(false);
+                setIsCaptured(true);
+                videoUtil && videoUtil.stop();
             }
             // 화면 삭제
             else if (type === 'remove') {
+                setIsCaptured(false);
                 setStream(undefined);
                 videoObj.current.srcObject = null;
             }
             // 화면 다운로드
             else if (type === 'download') {
-                canvasObj.current.width = videoObj.current.width;
-                canvasObj.current.height = videoObj.current.height;
-
-                const ctx = canvasObj.current.getContext('2d');
-                if (ctx != null) {
-                    ctx.drawImage(videoObj.current, 0, 0, videoObj.current.width, videoObj.current.height);
-                }
-
-                // A DOM 생성
-                const $link = document.createElement("a");
-
-                $link.download = "파일명.png";
-                $link.href = canvasObj.current.toDataURL("image/png");
-
-                // element에 마우스 클릭
-                $link.click();
+                setIsCaptured(true);
+                videoUtil && videoUtil.downloadImage();
             }
         }
     };
@@ -96,12 +98,6 @@ const ScreenView = () => {
     const handleTabs = (event: React.SyntheticEvent, tabIndex: number) => {
         setTab(tabIndex);
     };
-
-    useEffect(function () {
-        if (stream !== undefined) {
-            videoObj.current.srcObject = stream;
-        }
-    }, [stream, tab])
 
     return (
         <div className="container card">
@@ -150,14 +146,14 @@ const ScreenView = () => {
                         </ButtonGroup>
                         <ButtonGroup>
                             <Button variant="outlined" color="info" onClick={controlVideo('play')}
-                                    disabled={stream == null} startIcon={<FontAwesomeIcon icon={faPlay}/>}> 재생
+                                    disabled={stream == null || !isCaptured} startIcon={<FontAwesomeIcon icon={faPlay}/>}> 재생
                             </Button>
                             <Button variant="outlined" color="warning" onClick={controlVideo('capture')}
-                                    disabled={stream == null || !isPlayed}
+                                    disabled={stream == null || isCaptured}
                                     startIcon={<FontAwesomeIcon icon={faCamera}/>}> 캡처
                             </Button>
                             <Button variant="outlined" color="secondary" onClick={controlVideo('download')}
-                                    disabled={stream == null || isPlayed}
+                                    disabled={stream == null || !isCaptured}
                                     startIcon={<FontAwesomeIcon icon={faDownload}/>}> 다운로드
                             </Button>
                         </ButtonGroup>
@@ -194,11 +190,9 @@ const ScreenView = () => {
                         </Box>
                         <CustomTabPanel value={tab} index={0}>
                             <video id="video" autoPlay={true} ref={videoObj}></video>
-                            <canvas ref={canvasObj}></canvas>
                         </CustomTabPanel>
                         <CustomTabPanel value={tab} index={1}>
                             <video id="video" autoPlay={true} ref={recordObj}></video>
-
                         </CustomTabPanel>
                     </Box>
                 </div>

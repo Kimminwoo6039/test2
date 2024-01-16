@@ -232,12 +232,13 @@ body.swal2-shown.swal2-height-auto {
   display: flex;
   gap: 0.5rem;
   overflow-x: auto;
+  height: 6rem;
 }
 
 .device-list .device-item {
   width: 12rem;
   max-width: calc(50% - 0.5rem / 2);
-  height: 6rem;
+  height: 100%;
   word-break: break-word;
   text-align: center;
   border: solid 2px #ddd;
@@ -274,7 +275,7 @@ video#camera {
   width: 500px;
   max-width: 100%;
 }
-canvas#canvas {
+canvas {
   display: none;
 }
 video.reverse {
