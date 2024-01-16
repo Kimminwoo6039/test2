@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './Fonts/NotoSans.css'
+import 'Fonts/NotoSans.css'
+
 import './style.css';
 import './responsive.css';
 import reportWebVitals from './reportWebVitals';

@@ -1,31 +1,47 @@
 export interface VideoOptions {
-    // 거울 모드
-    mirror?: boolean;
+    mirror?: boolean; // 거울 모드
 }
 
 export class VideoUtil {
     obj: HTMLVideoElement;
     options: VideoOptions;
 
+    /**
+     * [VideoUtil] Video 관리자 생성
+     * @param {HTMLVideoElement} obj 제어할 Video 객체
+     * @param {VideoOptions} options Video 옵션
+     */
     constructor(obj: HTMLVideoElement, options?: VideoOptions) {
         this.obj = obj;
         this.options = Object.assign({}, {
             mirror: true
         }, options);
+
         if(this.obj){
             this.obj.classList.toggle('reverse', this.options.mirror);
         }
     }
 
-    play(){
+    /**
+     * [VideoUtil] 비디오 재생
+     * @returns {Promise<void>} promise Video 재생 결과 반환
+     */
+    play(): Promise<void>{
         return this.obj.play();
     }
 
-    stop(){
+    /**
+     * [VideoUtil] 비디오 중지
+     */
+    stop(): void {
         this.obj.pause();
     }
 
-    saveImage(){
+    /**
+     * [VideoUtil] Video 현재 화면 이미지 생성
+     * @returns {string} Image Data URL
+     */
+    saveImage(): string {
         this.obj.pause();
 
         const canvas = document.createElement('canvas');
@@ -45,7 +61,10 @@ export class VideoUtil {
         return canvas.toDataURL('image/png');
     }
 
-    downloadImage(){
+    /**
+     * [VideoUtil] Video 현재 화면 이미지 다운로드
+     */
+    downloadImage(): void {
         const a = document.createElement('a');
 
         a.href = this.saveImage();

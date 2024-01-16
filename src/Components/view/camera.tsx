@@ -2,7 +2,7 @@ import React, {MouseEventHandler, MutableRefObject, useEffect, useRef, useState}
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCamera} from "@fortawesome/free-solid-svg-icons";
 import {Button, ButtonGroup, FormControlLabel, Switch} from "@mui/material";
-import {VideoUtil} from "../element/video";
+import {VideoUtil} from "Components/utils/video";
 
 interface IDeviceProps {
     info: MediaDeviceInfo;

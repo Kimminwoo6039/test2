@@ -1,9 +1,10 @@
 import React from 'react';
 import {Avatar, Link, Tooltip} from "@mui/material";
 import './style.css';
-import velogIcon from '../../../Images/velog.svg';
-import githubIcon from '../../../Images/github.svg';
-import gmailIcon from '../../../Images/gmail.svg';
+
+import velogIcon from 'Images/velog.svg';
+import githubIcon from 'Images/github.svg';
+import gmailIcon from 'Images/gmail.svg';
 
 
 export interface IProfileLinkProps {
@@ -38,7 +39,7 @@ const Profile = (props: IProfileProps) => {
                             <img src={velogIcon} alt="velog 아이콘"/>
                         </Tooltip>
                     </Link>
-                    ) : <></>}
+                ) : <></>}
                 {props.link && props.link.github ? (
                     <Link href={props.link.github} target="_blank">
                         <Tooltip title="깃허브(GitHub) 페이지 열기" arrow={true}>

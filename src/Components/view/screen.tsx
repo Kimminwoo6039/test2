@@ -2,7 +2,6 @@ import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-import Alert from "../utils";
 import {Box, Button, ButtonGroup, FormControlLabel, IconButton, Switch, Tab, Tabs, Tooltip} from "@mui/material";
 import {
     faArrowPointer,
@@ -18,8 +17,9 @@ import {
     faVolumeHigh,
     faVolumeXmark
 } from "@fortawesome/free-solid-svg-icons";
-import {CustomTabPanel, tabProps} from "../element/tab";
-import {VideoUtil} from "../element/video";
+import {CustomTabPanel, tabProps} from "Components/element/tab";
+import {VideoUtil} from "Components/utils/video";
+import Alert from "Components/utils/alert";
 
 const ScreenView = () => {
     const [tab, setTab] = useState(0);
@@ -55,7 +55,7 @@ const ScreenView = () => {
             setStream(stream);
             setIsCaptured(false);
         }).catch(text => {
-            Alert.error({title: "Can't capture screen", text: text});
+            Alert.danger({title: "Can't capture screen", text: text});
         });
     }
 
@@ -146,7 +146,8 @@ const ScreenView = () => {
                         </ButtonGroup>
                         <ButtonGroup>
                             <Button variant="outlined" color="info" onClick={controlVideo('play')}
-                                    disabled={stream == null || !isCaptured} startIcon={<FontAwesomeIcon icon={faPlay}/>}> 재생
+                                    disabled={stream == null || !isCaptured}
+                                    startIcon={<FontAwesomeIcon icon={faPlay}/>}> 재생
                             </Button>
                             <Button variant="outlined" color="warning" onClick={controlVideo('capture')}
                                     disabled={stream == null || isCaptured}
