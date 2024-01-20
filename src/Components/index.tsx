@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {icon} from '@fortawesome/fontawesome-svg-core/import.macro'
@@ -17,6 +17,7 @@ import CameraView from "Components/view/camera";
 import ScreenView from "Components/view/screen";
 
 import Profile from "Components/element/profile";
+import {DateUtil} from "./utils/date";
 
 export class MenuItem {
     index: number;
@@ -48,6 +49,8 @@ const MainView = (props: IMainProps) => {
     const [menuIndex, setMenuIndex] = useState<number>(props.type ? props.type : 0)
     const [menuInfo, setMenuInfo] = useState<MenuItem>(MainContentType.CAMERA)
     const [drawerOpened, setDrawerOpened] = useState(false);
+    const [currentTime, setCurrentTime] = useState(DateUtil.getDateToStr({returnType: 'timeonly'}))
+    const timer = useRef<NodeJS.Timer>();
 
     const clickSidebar = (index: number) => {
         return (event: React.MouseEvent<HTMLDivElement>) => {
@@ -98,6 +101,12 @@ const MainView = (props: IMainProps) => {
         );
     }
 
+    useEffect(() => {
+        timer.current = setInterval(() => {
+            setCurrentTime(DateUtil.getDateToStr({returnType: 'timeonly'}))
+        }, 1000);
+    }, []);
+    // 메뉴 변경시
     useEffect(function () {
         Object.values(MainContentType).forEach(type => {
             if (type.index === menuIndex) {
@@ -140,7 +149,7 @@ const MainView = (props: IMainProps) => {
             </nav>
             <div className="content">
                 <header className="header">
-                    {menuInfo.name} 메뉴
+                    <div>{menuInfo.name} 메뉴</div><div>{currentTime}</div>
                 </header>
                 <section>
                     {menuInfo.view}

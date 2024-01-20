@@ -17,8 +17,9 @@ import {
     faVolumeXmark
 } from "@fortawesome/free-solid-svg-icons";
 import {TabPanel, tabProps} from "Components/element/tab";
-import {VideoUtil} from "Components/utils/video";
+import {VideoRecorder, VideoUtil} from "Components/utils/video";
 import Alert from "Components/utils/alert";
+import {DateUtil} from "Components/utils/date";
 
 const ScreenView = () => {
     const [tab, setTab] = useState(0);
@@ -29,15 +30,14 @@ const ScreenView = () => {
 
     const videoRef = useRef<HTMLVideoElement>(null) as MutableRefObject<HTMLVideoElement>;
     const recordRef = useRef<HTMLVideoElement>(null) as MutableRefObject<HTMLVideoElement>;
+    const [recordTime, setRecordTime] = useState('00:00');
 
+    const timer = useRef<NodeJS.Timer>();
     const videoUtil = new VideoUtil(videoRef, {
         mirror: false
     });
+    const [videoRecorder, setVideoRecorder] = useState<VideoRecorder>();
 
-    let recorder: MediaRecorder | null = null;
-    const data: BlobPart[] = [];
-
-    const [recordedUrl, setRecordedUrl] = useState('');
     const [isCaptured, setIsCaptured] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
 
@@ -47,6 +47,7 @@ const ScreenView = () => {
         return await navigator.mediaDevices.getDisplayMedia(constraints).then(stream => {
             videoRef.current.srcObject = stream;
             setStream(stream);
+            setVideoRecorder(new VideoRecorder(stream));
             setIsCaptured(false);
         }).catch(text => {
             Alert.danger({title: "Can't capture screen", text: text});
@@ -85,45 +86,30 @@ const ScreenView = () => {
     };
 
     const startRecording = () => {
-        setIsRecording(true);
-
         if(stream){
-
-
-            // 1.MediaStream을 매개변수로 MediaRecorder 생성자를 호출
-            recorder = new MediaRecorder(stream, {
-                mimeType: 'video/webm; codecs=vp9'
-            })
-
-            // 2. 전달받는 데이터를 처리하는 이벤트 핸들러 등록
-            recorder.ondataavailable = function (event) {
-                if (event.data.size > 0) {
-                    data.push(event.data);
-                }
+            setIsRecording(true);
+            if(videoRecorder) {
+                videoRecorder.start();
+                timer.current = setInterval(function(){
+                    setRecordTime(DateUtil.diff(videoRecorder.startTime, Date.now()));
+                }, 1000);
             }
 
-            // 3. 녹화 중지 이벤트 핸들러 등록
-            recorder.onstop = function () {
-                const blob = new Blob(data, {type: "video/webm"});
-                const url = URL.createObjectURL(blob);
-
-                setRecordedUrl(url);
-            }
-
-            // 4. 녹화 시작
-            recorder.start(1000);
+            videoRef.current?.classList.add('recording');
         }
     }
 
     const stopRecording = () => {
         setIsRecording(false);
-        recorder && recorder.stop();
-        recorder = null;
+        videoRecorder?.stop();
+
+        clearInterval(timer.current);
+        videoRef.current?.classList.remove('recording');
     }
 
     const downloadRecordedVideo = () => {
-        if(recordedUrl){
-            VideoUtil.downloadUrl(recordedUrl, 'video');
+        if(videoRecorder?.dataUrl){
+            VideoUtil.downloadUrl(videoRecorder.dataUrl, 'video');
         } else {
             Alert.warning({text: '다운로드할 영상이 없습니다!'});
         }
@@ -137,15 +123,14 @@ const ScreenView = () => {
         // Live
         if (tab === 0) {
             if(stream !== undefined){
+                videoUtil.update(videoRef);
                 videoRef.current.srcObject = stream;
             }
         }
         // Save
         else if(tab === 1){
-            if(recordedUrl){
-                console.info('handle tab', recordedUrl)
-                console.log('record', recordRef)
-                recordRef.current.src = recordedUrl;
+            if(videoRecorder?.dataUrl){
+                recordRef.current.src = videoRecorder.dataUrl;
             }
         }
     }, [tab]);
@@ -184,7 +169,7 @@ const ScreenView = () => {
                     </div>
 
                     <div className="section-btn-group">
-                        <div className="title">상태</div>
+                        <div className="title">화면 공유</div>
                         <ButtonGroup>
                             <Button variant="outlined" color="primary" onClick={controlVideo('select')}
                                     disabled={stream != null}
@@ -213,31 +198,36 @@ const ScreenView = () => {
 
                     <div className="section-btn-group">
                         <div className="title">녹화</div>
-                        <ButtonGroup variant="outlined" color="inherit">
-                            <Button onClick={startRecording}
+                        <ButtonGroup>
+                            <Button variant="outlined" color="primary" onClick={startRecording}
                                     disabled={stream == null || isRecording} startIcon={<FontAwesomeIcon icon={faPlay}/>}> 시작
                             </Button>
-                            <Button onClick={stopRecording}
+                            <Button variant="outlined" color="error" onClick={stopRecording}
                                     disabled={stream == null || !isRecording} startIcon={<FontAwesomeIcon icon={faStop}/>}> 종료
                             </Button>
-                        </ButtonGroup>
-                        <ButtonGroup>
-                            <Button variant="outlined" onClick={downloadRecordedVideo}
+                            <Button variant="outlined" color="secondary" onClick={downloadRecordedVideo}
                                     disabled={stream == null || isRecording} startIcon={<FontAwesomeIcon icon={faDownload}/>}> 다운로드
                             </Button>
                         </ButtonGroup>
+                        <div>
+                            <div hidden={!isRecording}>녹화중입니다.</div>
+                            <div>녹화 시간: {recordTime}</div>
+                        </div>
                     </div>
                 </div>
                 <div className="view-section">
                     <Box sx={{width: '100%'}}>
                         <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                             <Tabs value={tab} onChange={handleTabs} aria-label="screen tabs">
-                                <Tab label={<div><FontAwesomeIcon icon={faCircleDot}/> Live</div>} {...tabProps(0)} />
-                                <Tab label={<div><FontAwesomeIcon icon={faVideo}/> Save</div>} {...tabProps(1)} />
+                                <Tab label={<div><FontAwesomeIcon icon={faCircleDot}/> 실시간 스트리밍</div>} {...tabProps(0)} />
+                                <Tab label={<div><FontAwesomeIcon icon={faVideo}/> 녹화된 영상</div>} {...tabProps(1)} />
                             </Tabs>
                         </Box>
                         <TabPanel value={tab} index={0}>
-                            <video id="video" autoPlay={true} ref={videoRef}></video>
+                            <div className="video-wrapper">
+                                <video id="video" autoPlay={true} ref={videoRef}></video>
+                                <label></label>
+                            </div>
                         </TabPanel>
                         <TabPanel value={tab} index={1}>
                             <video id="record" controls={true} ref={recordRef}></video>

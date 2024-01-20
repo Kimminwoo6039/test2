@@ -24,6 +24,10 @@ export class VideoUtil {
         }
     }
 
+    update(obj: MutableRefObject<HTMLVideoElement>){
+        this.obj = obj.current;
+    }
+
     /**
      * [VideoUtil] 비디오 재생
      * @returns {Promise<void>} promise Video 재생 결과 반환
@@ -116,6 +120,8 @@ export class VideoRecorder {
     recorder?: MediaRecorder;
     data: BlobPart[] = [];
     dataUrl: string = '';
+    startTime: number = 0;
+    endTime: number = 0;
 
     constructor(stream: MediaStream) {
         this.stream = stream;
@@ -123,6 +129,9 @@ export class VideoRecorder {
 
     start(){
         this.isRecording = true;
+        this.data = [];
+        this.dataUrl = '';
+        this.startTime = Date.now();
 
         this.recorder = new MediaRecorder(this.stream, {
             mimeType: 'video/webm; codecs=vp9'
@@ -134,13 +143,14 @@ export class VideoRecorder {
         }
         this.recorder.onstop = () =>{
             const blob = new Blob(this.data, {type: "video/webm"});
-            const url = URL.createObjectURL(blob);
-            this.dataUrl = url;
+            this.dataUrl = URL.createObjectURL(blob);
         }
         this.recorder.start();
     }
 
     stop(){
+        this.isRecording = false;
+        this.endTime = Date.now();
         this.recorder && this.recorder.stop();
         this.recorder = undefined;
     }

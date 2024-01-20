@@ -129,13 +129,14 @@ button {
   position: fixed;
   top: 0;
   left: var(--sidebar-size);
-  width: 100%;
+  width: calc(100% - var(--sidebar-size));
   font-size: 1.2rem;
   font-weight: 600;
   background: var(--bg-card-color);
   height: var(--header-size);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0.5rem 1.2rem;
   gap: 1rem;
   background: rgba(249, 250, 251, 0.8);
@@ -225,7 +226,36 @@ section {
   border-radius: 0.5rem;
   box-shadow: 1px 1px 1rem rgba(0,0,0,0.1);
 }
+.container .view-section video.recording {
+  border: solid 3px red;
+  animation: 3s border-flash infinite;
+}
+.video-wrapper {
+  position: relative;
+}
+.video-wrapper video.recording + label::after {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  content: '녹화중';
+  z-index: 100;
+  color: red;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
 
+@keyframes border-flash {
+  from {
+    border-color: red;
+  }
+
+  50% {
+    border-color: transparent;
+  }
+  to {
+    border-color: red;
+  }
+}
 /* SweetAlert */
 body.swal2-shown.swal2-height-auto {
   height: 100% !important;
