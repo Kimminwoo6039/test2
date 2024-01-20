@@ -130,7 +130,7 @@ export class Alert {
 
         Swal.fire({
             title: options.title || '알림',
-            html: options.text,
+            html: options.text + timeContext,
             icon: options.icon || 'info',
             showCancelButton: true,
             confirmButtonText: options.confirmText || '확인',

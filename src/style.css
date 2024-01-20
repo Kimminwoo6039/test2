@@ -219,9 +219,11 @@ section {
   width: calc(100% - 400px);
 }
 .container .view-section video {
-  border: solid 1px;
-  background: rgba(0,0,0,0.5);
   height: 100%;
+  background: rgba(0,0,0,0.5);
+  border: solid 1px #efefef;
+  border-radius: 0.5rem;
+  box-shadow: 1px 1px 1rem rgba(0,0,0,0.1);
 }
 
 /* SweetAlert */

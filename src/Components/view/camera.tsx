@@ -12,27 +12,32 @@ interface IDeviceProps {
 
 const Camera = (props: IDeviceProps) => {
     return (
-        <div className={props.isActive ? "device-item active": "device-item"} onClick={props.onClick}>
-            <div className="icon"><FontAwesomeIcon icon={faCamera} /></div>
+        <div className={props.isActive ? "device-item active" : "device-item"} onClick={props.onClick}>
+            <div className="icon"><FontAwesomeIcon icon={faCamera}/></div>
             <div className="name">{props.info.label.split('(')[0]}</div>
         </div>
     );
 }
 const CameraView = () => {
     const videoRef = useRef<HTMLVideoElement>() as MutableRefObject<HTMLVideoElement>;
-    const [videoUtil, setVideoUtil] = useState<VideoUtil>();
 
     const [cameraId, setCameraId] = useState<string>()
     const [cameras, setCameras] = useState<MediaDeviceInfo[]>()
 
     const [isCaptured, setIsCaptured] = useState(false);
+    const [constraints, setConstraints] = useState<MediaStreamConstraints>({video: true, audio: true});
 
-    const getUserMedia = function(constraints?: MediaStreamConstraints){
-        return new Promise(function(resolve, reject) {
+    const videoUtil= new VideoUtil(videoRef, {
+        mirror: true
+    });
+
+    const getUserMedia = function (constraints?: MediaStreamConstraints) {
+        return new Promise(function (resolve, reject) {
             navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
                 videoRef.current.srcObject = stream;
                 resolve(stream);
             }).catch(error => {
+                console.error(error)
                 if (['NotFoundError', 'DevicesNotFoundError', 'NotReadableError'].indexOf(error.name) > -1) {
                     reject('사용 가능한 카메라가 없습니다.');
                 } else if (error.name === 'TrackStartError') {
@@ -47,14 +52,9 @@ const CameraView = () => {
     }
 
     useEffect(() => {
-        setVideoUtil(new VideoUtil(videoRef.current, {
-            mirror: true
-        }));
-    }, []);
-
-    useEffect(function () {
         setIsCaptured(false);
-        getUserMedia({video: true, audio: true}).then((stream) => {
+
+        getUserMedia(constraints).then((stream) => {
             navigator.mediaDevices.enumerateDevices().then(devices => {
                 const cameras = devices.filter(e => e.kind === 'videoinput');
                 setCameras(cameras);
@@ -62,26 +62,25 @@ const CameraView = () => {
             });
         })
     }, []);
-    
+
     // 카메라 ID 변경 시 변경된 Video 저장
-    useEffect(function(){
+    useEffect(function () {
         setIsCaptured(false);
-        getUserMedia({video: {deviceId: cameraId, facingMode: 'user', width: 400, height: 600}});
     }, [cameraId]);
 
-    function playVideo(){
+    function playVideo() {
         setIsCaptured(false);
-        videoUtil && videoUtil.play();
+        videoUtil.play();
     }
 
-    function savePicture(){
+    function savePicture() {
         setIsCaptured(true);
-        videoUtil && videoUtil.saveImage();
+        videoUtil.saveImage();
     }
 
-    function downloadPicture(){
+    function downloadPicture() {
         setIsCaptured(true);
-        videoUtil && videoUtil.downloadImage();
+        videoUtil.downloadImage();
     }
 
     return (
@@ -91,13 +90,21 @@ const CameraView = () => {
                     <div className="section-title">카메라 목록</div>
                     <div className="device-list">
                         {cameras?.length === 0 ? (
-                                <div>사용 가능한 카메라가 없습니다. <br /> 카메라 연결 후 사용해주세요</div>
-                        ) :
-                            (cameras?.map((device, index) =>{
-                                return <Camera key={'video-'+index} info={device} isActive={cameraId === device.deviceId}
+                                <div>사용 가능한 카메라가 없습니다. <br/> 카메라 연결 후 사용해주세요</div>
+                            ) :
+                            (cameras?.map((device, index) => {
+                                return <Camera key={'video-' + index} info={device}
+                                               isActive={cameraId === device.deviceId}
                                                onClick={(e) => {
-                                    setCameraId(device.deviceId);
-                                }}/>;
+                                                   setCameraId(cameraId)
+                                                   getUserMedia({
+                                                       video: {
+                                                           deviceId: cameraId,
+                                                       }
+                                                   }).then(stream => {
+
+                                                   })
+                                               }}/>;
                             }))
                         }
                     </div>
@@ -110,7 +117,7 @@ const CameraView = () => {
                                               control={<Switch onChange={event => {
                                                   videoUtil && videoUtil.setMirror(event.target.checked);
                                               }}
-                                                               defaultChecked={true}/>}
+                                                               defaultChecked={videoUtil.getMirror()}/>}
                                               label="좌우 반전"/>
                             <ButtonGroup>
                                 <Button disabled={isCaptured} onClick={savePicture}>촬영</Button>
@@ -119,7 +126,6 @@ const CameraView = () => {
                             </ButtonGroup>
                         </div>
                     </div>
-
                 </div>
                 <div className="section">
                     <video id="camera" autoPlay={true} ref={videoRef}></video>

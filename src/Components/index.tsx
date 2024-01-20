@@ -2,9 +2,6 @@ import React, {Fragment, useEffect, useState} from 'react';
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {icon} from '@fortawesome/fontawesome-svg-core/import.macro'
-
-import CameraView from "./view/camera";
-import ScreenView from "./view/screen";
 import {
     Box,
     IconButton,
@@ -15,7 +12,11 @@ import {
     ListItemText,
     SwipeableDrawer
 } from "@mui/material";
-import Profile from "./element/profile";
+
+import CameraView from "Components/view/camera";
+import ScreenView from "Components/view/screen";
+
+import Profile from "Components/element/profile";
 
 export class MenuItem {
     index: number;
@@ -70,7 +71,7 @@ const MainView = (props: IMainProps) => {
         }
     }
 
-    const menuList = (disablePadding:boolean) => {
+    const menuList = (disablePadding: boolean) => {
         return (
             <div className="menu-list">
                 <Profile
@@ -129,7 +130,7 @@ const MainView = (props: IMainProps) => {
                                     sx={{width: 300}}
                                     role="presentation"
                                     onClick={toggleDrawer(false)}>
-                                {menuList(false)}
+                                    {menuList(false)}
                                 </Box>
                             </SwipeableDrawer>
                         </>

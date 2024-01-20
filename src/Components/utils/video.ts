@@ -1,3 +1,5 @@
+import {MutableRefObject} from "react";
+
 export interface VideoOptions {
     mirror?: boolean; // 거울 모드
 }
@@ -11,8 +13,8 @@ export class VideoUtil {
      * @param {HTMLVideoElement} obj 제어할 Video 객체
      * @param {VideoOptions} options Video 옵션
      */
-    constructor(obj: HTMLVideoElement, options?: VideoOptions) {
-        this.obj = obj;
+    constructor(obj: MutableRefObject<HTMLVideoElement>, options?: VideoOptions) {
+        this.obj = obj.current;
         this.options = Object.assign({}, {
             mirror: true
         }, options);
@@ -62,19 +64,44 @@ export class VideoUtil {
     }
 
     /**
+     * [VideoUtil] 다운로드 함수
+     * @param { string } url 다운로드할 URL
+     * @param {'video' | 'image'} format 파일 형식
+     * @param { string } name 다운로드 명
+     */
+    static downloadUrl(url: string, format?: string, name?: string){
+        const a = document.createElement('a');
+
+        const extHash = {'video': 'webm', 'image': 'png'};
+        // @ts-ignore
+        let ext: string = extHash[format] || 'png';
+
+        a.href = url;
+        a.download = name || Date.now() + '.' + ext;
+        document.body.appendChild(a);
+
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    /**
      * [VideoUtil] Video 현재 화면 이미지 다운로드
      */
     downloadImage(): void {
         const a = document.createElement('a');
 
-        a.href = this.saveImage();
-        a.download = Date.now() + '.png';
-        document.body.appendChild(a);
-        a.click();
+        VideoUtil.downloadUrl(this.saveImage());
     }
 
     /**
-     * [옵션 설정] 거울 모드 설정
+     * [VideoUtil] 거울모드 설정 확인
+     */
+    getMirror(){
+        return this.options.mirror;
+    }
+
+    /**
+     * [VideoUtil] 거울 모드 설정
      * @param {boolean} mirror 거울 모드 여부
      */
     setMirror(mirror: boolean){
@@ -83,4 +110,38 @@ export class VideoUtil {
     }
 }
 
-export default VideoUtil;
+export class VideoRecorder {
+    stream: MediaStream;
+    isRecording: boolean = false;
+    recorder?: MediaRecorder;
+    data: BlobPart[] = [];
+    dataUrl: string = '';
+
+    constructor(stream: MediaStream) {
+        this.stream = stream;
+    }
+
+    start(){
+        this.isRecording = true;
+
+        this.recorder = new MediaRecorder(this.stream, {
+            mimeType: 'video/webm; codecs=vp9'
+        });
+        this.recorder.ondataavailable = (event)=> {
+            if (event.data.size > 0) {
+                this.data.push(event.data);
+            }
+        }
+        this.recorder.onstop = () =>{
+            const blob = new Blob(this.data, {type: "video/webm"});
+            const url = URL.createObjectURL(blob);
+            this.dataUrl = url;
+        }
+        this.recorder.start();
+    }
+
+    stop(){
+        this.recorder && this.recorder.stop();
+        this.recorder = undefined;
+    }
+}
