@@ -72,6 +72,6 @@ export const DateUtil = {
         return times.map(v => DateUtil.leftPad(v)).join(':');
     },
     leftPad: function (str: number) {
-        return str > 10 ? str.toString() : '0' + str.toString();
+        return str >= 10 ? str.toString() : '0' + str.toString();
     }
 }
