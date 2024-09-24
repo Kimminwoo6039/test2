@@ -1,0 +1,46 @@
+.sidebar .menu-toggler {
+    display: none;
+}
+
+@media(max-width: 768px){
+    body {
+        --header-size: 60px;
+        --sidebar-size: 80px;
+    }
+    #root {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        height: var(--sidebar-size);
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px dashed rgba(145, 158, 171, 0.2);
+    }
+    .sidebar ul, .sidebar .logo {
+        margin: 0;
+        padding: 0;
+    }
+    .sidebar .menu-toggler {
+        display: block;
+    }
+    .sidebar .menu-list {
+        display: none;
+    }
+
+    .header {
+        top: var(--sidebar-size);
+        left: 0;
+    }
+    .content {
+        width: 100%;
+    }
+    .container .desc-section, .container .view-section {
+        width: 100%;
+        padding: 0;
+    }
+    .card-body {
+        padding: 0.8rem 1rem;
+        flex-direction: column;
+    }
+}

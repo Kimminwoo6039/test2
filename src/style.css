@@ -1,0 +1,318 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Noto Sans KR', 'Noto Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+button, input, a, div, span {
+  font-family: 'Noto Sans KR', 'Noto Sans', sans-serif !important;
+}
+img {
+    max-height: 100%;
+}
+body {
+  --header-size: 80px;
+  --sidebar-size: 280px;
+  --bg-card-color: #333;
+  --bg-main-color: #f9fafb;
+  --text-main-color: #2c2c2c;
+}
+#root {
+  background: var(--bg-main-color);
+  color: var(--text-main-color);
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+* {
+  box-sizing: border-box;
+}
+button {
+  cursor: pointer;
+}
+/* Sidebar */
+.sidebar {
+  color: var(--text-main-color);
+  width: var(--sidebar-size);
+  height: 100%;
+  padding: 0 1rem;
+  border-right: dashed 2px rgba(145, 158, 171, 0.2);
+}
+.sidebar .title {
+  padding: 1.5rem 0.8rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.sidebar .logo {
+  padding: 0.7rem 0;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #426fff;
+}
+.sidebar .logo-img {
+    height: 30px;
+}
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+.sidebar ul li:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+.sidebar .menu-toggler {
+  margin-left: auto;
+}
+.sidebar ul .menu-item button {
+  -webkit-tap-highlight-color: transparent;
+  background-color: transparent;
+  outline: 0px;
+  border: 0px;
+  margin: 0px;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  appearance: none;
+  display: flex;
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: center;
+  align-items: center;
+  position: relative;
+  text-decoration: none;
+  min-width: 0px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  padding: 0.7rem 0.8rem;
+  gap: 0.5rem;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  min-height: 44px;
+  border-radius: 6px;
+  line-height: 1.57143;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(99, 115, 129);
+  text-transform: capitalize;
+}
+.sidebar ul button.active{
+  font-weight: 600;
+  color: rgb(24, 119, 242);
+  text-transform: capitalize;
+  background-color: rgba(24, 119, 242, 0.08);
+}
+.sidebar ul button:hover {
+  background-color: rgba(145, 158, 171, 0.08);
+}
+.sidebar + .section {
+  width: calc(100% - var(--sidebar-size));
+}
+
+/* Main */
+.content {
+  position: relative;
+  height: 100%;
+  width: calc(100% - var(--sidebar-size));
+  display: flex;
+  padding: calc(var(--header-size)) 1.5rem 1.2rem;;
+  overflow:auto;
+}
+.header {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-size);
+  width: calc(100% - var(--sidebar-size));
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: var(--bg-card-color);
+  height: var(--header-size);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.2rem;
+  gap: 1rem;
+  background: rgba(249, 250, 251, 0.8);
+  z-index: 10;
+}
+
+.container, video {
+  width: 100%;
+}
+section {
+  width: 100%;
+}
+.section {
+  width: 100%;
+}
+.section:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.card {
+  background-color: rgb(255, 255, 255);
+  color: rgb(33, 43, 54);
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  overflow: hidden;
+  box-shadow: rgba(145, 158, 171, 0.08) 0px 0px 2px 0px, rgba(145, 158, 171, 0.08) 0px 12px 24px -4px;
+  border-radius: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  z-index: 0;
+  height: 100%;
+}
+.card-header {
+  padding: 1rem 1rem 0;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+.card-body {
+  display: flex;
+  padding: 1rem 1.5rem;
+  height: 100%;
+  overflow: auto;
+}
+.d-flex {
+  display: flex;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-column {
+  flex-direction: column;
+}
+.container .desc-section {
+  width: 400px;
+  padding-right: 1rem;
+  color: var(--text-main-color);
+}
+.section .section-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+.section .section-sub-title {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.section .section-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.section .section-btn-group .title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+}
+
+.container .view-section {
+  width: calc(100% - 400px);
+}
+.container .view-section video {
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  border: solid 1px #efefef;
+  border-radius: 0.5rem;
+  box-shadow: 1px 1px 1rem rgba(0,0,0,0.1);
+}
+.container .view-section video.recording {
+  border: solid 3px red;
+  animation: 3s border-flash infinite;
+}
+.video-wrapper {
+  position: relative;
+}
+.video-wrapper video.recording + label::after {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  content: '녹화중';
+  z-index: 100;
+  color: red;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+@keyframes border-flash {
+  from {
+    border-color: red;
+  }
+
+  50% {
+    border-color: transparent;
+  }
+  to {
+    border-color: red;
+  }
+}
+/* SweetAlert */
+body.swal2-shown.swal2-height-auto {
+  height: 100% !important;
+}
+.device-list {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  height: 6rem;
+}
+
+.device-list .device-item {
+  width: 12rem;
+  max-width: calc(50% - 0.5rem / 2);
+  height: 100%;
+  word-break: break-word;
+  text-align: center;
+  border: solid 2px #ddd;
+  background: #fcfcfc;
+  color: #777;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.device-list .device-item:hover {
+  cursor: pointer;
+  color: hotpink;
+  border-color: hotpink;
+  background: #ffebf5;
+}
+.device-list .device-item.active {
+  color: #5582ff;
+  border-color: #5582ff;
+  background: #eaf0ff;
+  font-weight: 600;
+}
+.device-list .device-item .icon {
+  font-size: 1.5rem;
+}
+.device-list .device-item .name {
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+video#camera {
+  width: 500px;
+  max-width: 100%;
+}
+canvas {
+  display: none;
+}
+video.reverse {
+  -moz-transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  -o-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
