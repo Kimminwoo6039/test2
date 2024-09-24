@@ -101,7 +101,7 @@ const MainView = (props: IMainProps) => {
     useEffect(function () {
         Object.values(MainContentType).forEach(type => {
             if (type.index === menuIndex) {
-                // setMenuInfo(type);
+                setMenuInfo(type);
             }
         })
     }, [menuIndex]);
