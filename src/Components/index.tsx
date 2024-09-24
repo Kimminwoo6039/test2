@@ -36,7 +36,7 @@ export class MenuItem {
 }
 
 export const MainContentType = {
-    // CAMERA: new MenuItem(0, '카메라', <FontAwesomeIcon icon={icon({name: 'camera'})}/>, (<CameraView/>)),
+    CAMERA: new MenuItem(0, '카메라', <FontAwesomeIcon icon={icon({name: 'camera'})}/>, (<CameraView/>)),
     SCREEN: new MenuItem(1, '스크린', <FontAwesomeIcon icon={icon({name: 'desktop'})}/>, (<ScreenView/>))
 }
 
@@ -47,7 +47,7 @@ export interface IMainProps {
 
 const MainView = (props: IMainProps) => {
     const [menuIndex, setMenuIndex] = useState<number>(props.type ? props.type : 0)
-     const [menuInfo, setMenuInfo] = useState<MenuItem>(MainContentType.SCREEN)
+     const [menuInfo, setMenuInfo] = useState<MenuItem>(MainContentType.CAMERA)
     const [drawerOpened, setDrawerOpened] = useState(false);
     const [currentTime, setCurrentTime] = useState(DateUtil.getDateToStr({returnType: 'timeonly'}))
     const timer = useRef<NodeJS.Timer>();
@@ -140,7 +140,7 @@ const MainView = (props: IMainProps) => {
             </nav>
             <div className="content">
                 <header className="header">
-                    {/*<div>{menuInfo.name} 메뉴</div><div>{currentTime}</div>*/}
+                    <div>{menuInfo.name} 메뉴</div><div>{currentTime}</div>
                 </header>
                 <section>
                     {menuInfo.view}
